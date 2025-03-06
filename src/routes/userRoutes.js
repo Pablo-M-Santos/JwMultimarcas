@@ -1,7 +1,6 @@
-// userRoutes.js
 import express from "express";
-import { getAllUsers } from "./controllers/authController.js";
-import { authenticate, isAdmin } from "./middlwares/middleware.js";
+import { getAllUsers } from "../controllers/userController.js";
+import { authenticate, isAdmin } from "../middlwares/middleware.js";
 
 const router = express.Router();
 

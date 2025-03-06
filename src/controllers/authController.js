@@ -7,7 +7,6 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || "12345678";
 
-// Login
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -30,7 +29,6 @@ export const login = async (req, res) => {
   }
 };
 
-// Cadastrar Usuário
 export const register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -60,17 +58,5 @@ export const register = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Erro no servidor" });
-  }
-};
-
-// Busca todos usuários
-export const getAllUsers = async (req, res) => {
-  try {
-    const users = await prisma.user.findMany();
-
-    res.status(200).json(users);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erro ao buscar os usuários" });
   }
 };
