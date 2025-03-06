@@ -23,7 +23,7 @@ export const login = async (req, res) => {
       expiresIn: "1h",
     });
 
-    res.json({ message: "Login realizado com sucesso", token });
+    res.json({ message: "Login realizado com sucesso", token, role: user.role });
   } catch (error) {
     res.status(500).json({ error: "Erro no servidor" });
   }
