@@ -1,7 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
-import Checkout from "./pages/Checkout";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import ProductForm from "./pages/ProductForm";
 
 const App = () => {
   return (
@@ -9,7 +10,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/admin/products" element={<ProductForm />} />{" "}
       </Routes>
     </Router>
   );

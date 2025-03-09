@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../api/api";
+import Navbar from "../components/Navbar";
 
 interface Product {
   id: number;
@@ -62,6 +63,7 @@ const Home = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", padding: "20px" }}>
+      <Navbar />
       <div
         style={{
           display: "flex",
