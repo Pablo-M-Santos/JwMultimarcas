@@ -1,33 +1,131 @@
-import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { api } from "../api/api";
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
 
 const Home = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [cart, setCart] = useState<Product[]>([]);
   const navigate = useNavigate();
-  const [role, setRole] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
-    setRole(localStorage.getItem("role")); // 🔥 Pega o role salvo no localStorage
+    const fetchProducts = async () => {
+      try {
+        const response = await api.get("/api/products");
+        setProducts(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar produtos", error);
+      }
+    };
+
+    fetchProducts();
+
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
   }, []);
+
+  const addToCart = (product: Product) => {
+    const updatedCart = [...cart, product];
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+    if (!isLoggedIn) {
+      navigate("/login", { state: { from: "/" } });
+    }
+  };
+
+  const handleCheckout = () => {
+    if (isLoggedIn) {
+      navigate("/checkout");
+    } else {
+      navigate("/login", { state: { from: "/checkout" } });
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("role");
+    localStorage.removeItem("cart");
+    setIsLoggedIn(false);
     navigate("/login");
   };
 
   return (
-    <div>
-      <h2>Home</h2>
+    <div style={{ display: "flex", flexDirection: "column", padding: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: "20px",
+        }}
+      >
+        {isLoggedIn && (
+          <button
+            onClick={handleLogout}
+            style={{ padding: "10px", cursor: "pointer" }}
+          >
+            Logout
+          </button>
+        )}
+      </div>
+      <p>{isLoggedIn ? "Usuário Logado ✅" : "Usuário Não Logado ❌"}</p>
 
-      {role === "admin" && (
-        <div>
-          <Link to="/users">Usuários</Link>
-          <br />
-          <Link to="/products">Produtos</Link>
-        </div>
-      )}
+      <h1>Produtos</h1>
+      <div>
+        {products.map((product) => (
+          <div
+            key={product.id}
+            style={{
+              border: "1px solid #ddd",
+              padding: "10px",
+              marginBottom: "10px",
+            }}
+          >
+            <h2>{product.name}</h2>
+            <p>R$ {product.price.toFixed(2)}</p>
+            <button onClick={() => addToCart(product)}>
+              Adicionar ao Carrinho
+            </button>
+          </div>
+        ))}
+      </div>
 
-      <button onClick={handleLogout}>Sair</button>
+      <div
+        style={{
+          marginTop: "20px",
+          padding: "20px",
+          borderTop: "2px solid #ddd",
+        }}
+      >
+        <h2>Carrinho</h2>
+        {cart.length === 0 ? (
+          <p>Seu carrinho está vazio.</p>
+        ) : (
+          <ul>
+            {cart.map((item, index) => (
+              <li key={index}>
+                {item.name} - R$ {item.price.toFixed(2)}
+              </li>
+            ))}
+          </ul>
+        )}
+        <button
+          onClick={handleCheckout}
+          style={{ marginTop: "20px", padding: "10px", cursor: "pointer" }}
+        >
+          Finalizar Compra
+        </button>
+      </div>
     </div>
   );
 };
