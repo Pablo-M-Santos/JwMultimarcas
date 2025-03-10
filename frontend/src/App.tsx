@@ -2,7 +2,9 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import ProductForm from "./pages/ProductForm";
+import AdminPage from "./pages/AdminPage";
+import Checkout from "./pages/Checkout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
   return (
@@ -10,8 +12,11 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/admin/products" element={<ProductForm />} />{" "}
+        <Route path="/checkout" element={<Checkout />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin/products" element={<AdminPage />} />
+        </Route>
       </Routes>
     </Router>
   );

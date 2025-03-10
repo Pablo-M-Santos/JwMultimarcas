@@ -14,6 +14,7 @@ const Home = () => {
   const [cart, setCart] = useState<Product[]>([]);
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -29,6 +30,8 @@ const Home = () => {
 
     const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
+    const role = localStorage.getItem("role");
+    setUserRole(role);
 
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
@@ -57,13 +60,15 @@ const Home = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("cart");
+    localStorage.removeItem("role");
     setIsLoggedIn(false);
+    setUserRole(null);
     navigate("/login");
   };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", padding: "20px" }}>
-      <Navbar />
+      {userRole === "admin" && <Navbar />}
       <div
         style={{
           display: "flex",
