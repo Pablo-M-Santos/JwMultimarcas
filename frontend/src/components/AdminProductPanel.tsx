@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { api } from "../api/api";
 
-// Definição do tipo Product
+
 interface Product {
   id: string;
   name: string;
@@ -44,7 +44,7 @@ const AdminProductPanel = () => {
         alert("Produto deletado!");
       }
       setModalType(null);
-      fetchProducts(); // Atualiza a lista após ação
+      fetchProducts(); 
     } catch (error) {
       console.error("Erro na operação", error);
     }

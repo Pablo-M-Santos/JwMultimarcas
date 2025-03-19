@@ -15,6 +15,9 @@ const Home = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userPicture, setUserPicture] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -28,11 +31,47 @@ const Home = () => {
 
     fetchProducts();
 
+    // Verifica o token armazenado e autentica o usuário
     const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token);
-    const role = localStorage.getItem("role");
-    setUserRole(role);
+    if (token) {
+      setIsLoggedIn(true);
+      const role = localStorage.getItem("role");
+      setUserRole(role);
+      const name = localStorage.getItem("name");
+      setUserName(name);
+      const email = localStorage.getItem("email");
+      setUserEmail(email);
+      const picture = localStorage.getItem("picture");
+      setUserPicture(picture);
+    }
 
+    if (token) {
+      setIsLoggedIn(true);
+
+      // Faz a requisição para validar o token e pegar os dados do usuário
+      const fetchUserData = async () => {
+        try {
+          const response = await api.get("/auth/profile", {
+            headers: {
+              Authorization: `Bearer ${token}`, // Passa o token para o backend
+            },
+          });
+          // Armazena os dados do usuário no estado
+          setUserRole(response.data.role);
+          setUserName(response.data.name);
+          setUserEmail(response.data.email);
+          setUserPicture(response.data.picture);
+        } catch (error) {
+          console.error("Erro ao recuperar dados do usuário", error);
+          // Caso ocorra algum erro (como token expirado), faça logout
+          handleLogout();
+        }
+      };
+
+      fetchUserData();
+    }
+
+    // Recupera o carrinho salvo no localStorage
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
       setCart(JSON.parse(savedCart));
@@ -58,11 +97,19 @@ const Home = () => {
   };
 
   const handleLogout = () => {
+    // Limpa o localStorage e os estados
     localStorage.removeItem("token");
     localStorage.removeItem("cart");
     localStorage.removeItem("role");
+    localStorage.removeItem("name");
+    localStorage.removeItem("email");
+    localStorage.removeItem("picture");
+
     setIsLoggedIn(false);
     setUserRole(null);
+    setUserName(null);
+    setUserEmail(null);
+    setUserPicture(null);
     navigate("/login");
   };
 
@@ -85,7 +132,23 @@ const Home = () => {
           </button>
         )}
       </div>
-      <p>{isLoggedIn ? "Usuário Logado ✅" : "Usuário Não Logado ❌"}</p>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        {userPicture && (
+          <img
+            src={userPicture}
+            alt="Foto do usuário"
+            style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+          />
+        )}
+        {isLoggedIn ? (
+          <p>
+            Nome: {userName} <br />
+            Email: {userEmail}
+          </p>
+        ) : (
+          <p>Usuário Não Logado ❌</p>
+        )}
+      </div>
 
       <h1>Produtos</h1>
       <div>

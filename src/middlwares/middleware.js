@@ -15,13 +15,13 @@ export const authenticate = (req, res, next) => {
 
   try {
     // Verifica e decodifica o token
-    const verified = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
 
     // Atribui o usuário verificado à requisição
-    req.user = verified;
+    req.user = decoded;
     next();
   } catch (error) {
-    res.status(400).json({ error: "Token inválido ou expirado." });
+    res.status(400).json({ error: "Token inválido." });
   }
 };
 

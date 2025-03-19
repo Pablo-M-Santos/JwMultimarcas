@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedRoute = () => {
-  const role = localStorage.getItem("role"); // Pegando a role salva
+  const role = localStorage.getItem("role");
 
   return role === "admin" ? <Outlet /> : <Navigate to="/" replace />;
 };
