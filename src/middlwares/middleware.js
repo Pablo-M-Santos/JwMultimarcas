@@ -17,11 +17,12 @@ export const authenticate = (req, res, next) => {
     // Verifica e decodifica o token
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    // Atribui o usuário verificado à requisição
+    console.log("Usuário autenticado:", decoded);
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(400).json({ error: "Token inválido." });
+    console.error("Erro na autenticação do token:", error);
+    res.status(401).json({ error: "Token inválido." });
   }
 };
 

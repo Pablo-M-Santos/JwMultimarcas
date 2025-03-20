@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { api } from "../api/api";
+import { api, setAuthToken } from "../api/api";
 
 const VerifyCode = () => {
   const [code, setCode] = useState("");
@@ -11,22 +11,33 @@ const VerifyCode = () => {
 
   if (!email) {
     alert("O email não foi passado corretamente.");
-    navigate("/login"); // Redireciona caso o email não tenha sido passado
+    navigate("/login");
     return;
   }
 
   const handleVerifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Ativa o estado de carregamento enquanto a requisição é feita
+    setLoading(true);
 
     try {
       const response = await api.post("/auth/verify-code", { email, code });
-      console.log(response.data);
 
-      // Verifica a resposta da API para ver se a verificação foi bem-sucedida
-      if (response.data.message === "Código verificado com sucesso") {
+      if (response.data.token) {
+        // Armazena o token e os dados do usuário
         localStorage.setItem("token", response.data.token);
-        navigate("/"); // Redireciona para a página inicial em caso de sucesso
+        localStorage.setItem("role", response.data.role);
+        localStorage.setItem("name", response.data.name);
+        localStorage.setItem("email", email);
+
+        if (response.data.picture) {
+          localStorage.setItem("picture", response.data.picture);
+        }
+
+        // Define o token para futuras requisições
+        setAuthToken(response.data.token);
+
+        // Redireciona para a HomePage
+        navigate("/");
       } else {
         alert("Código inválido, tente novamente.");
       }
@@ -34,7 +45,7 @@ const VerifyCode = () => {
       console.error("Erro na verificação do código", error);
       alert("Houve um erro ao verificar o código. Tente novamente.");
     } finally {
-      setLoading(false); // Desativa o estado de carregamento após a requisição
+      setLoading(false);
     }
   };
 

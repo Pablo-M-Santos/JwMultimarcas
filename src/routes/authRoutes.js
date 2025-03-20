@@ -8,6 +8,8 @@ import {
   verifyCode,
 } from "../controllers/authController.js";
 
+import { authenticate } from "../middlwares/middleware.js";
+
 const router = express.Router();
 
 router.post("/login", login);
@@ -18,7 +20,7 @@ router.post("/google-login", googleLogin);
 router.post("/send-code", sendVerificationCode);
 router.post("/verify-code", verifyCode);
 
-router.get("/profile", getUserProfile);
+router.get("/profile", authenticate, getUserProfile);
 
 export default router;
 
