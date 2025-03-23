@@ -11,7 +11,7 @@ const VerifyCode = () => {
 
   if (!email) {
     alert("O email não foi passado corretamente.");
-    navigate("/login");
+    navigate("/request-code");
     return;
   }
 
@@ -23,7 +23,6 @@ const VerifyCode = () => {
       const response = await api.post("/auth/verify-code", { email, code });
 
       if (response.data.token) {
-        // Armazena o token e os dados do usuário
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", response.data.role);
         localStorage.setItem("name", response.data.name);
@@ -33,10 +32,8 @@ const VerifyCode = () => {
           localStorage.setItem("picture", response.data.picture);
         }
 
-        // Define o token para futuras requisições
         setAuthToken(response.data.token);
 
-        // Redireciona para a HomePage
         navigate("/");
       } else {
         alert("Código inválido, tente novamente.");

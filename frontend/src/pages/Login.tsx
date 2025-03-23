@@ -15,17 +15,11 @@ const Login = () => {
 
     try {
       const response = await api.post("/auth/login", { email, password });
-      const { token, role, verified } = response.data;
+      const { token, role } = response.data;
 
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
       setAuthToken(token);
-
-      // Se o usuário não tiver verificado, redireciona para a tela de verificação do código
-      if (!verified) {
-        navigate("/verify-code", { state: { email } });
-        return;
-      }
 
       const savedCart = localStorage.getItem("cart");
       if (savedCart) {
@@ -33,7 +27,7 @@ const Login = () => {
       }
 
       const from = location.state?.from || "/";
-      navigate(from); // Garantir redirecionamento para a página inicial ou anterior
+      navigate(from); 
     } catch (error) {
       console.error("Erro no login", error);
     }
@@ -65,7 +59,7 @@ const Login = () => {
 
       setAuthToken(token);
 
-      navigate("/"); // Redireciona para a página inicial após login com Google
+      navigate("/"); 
     } catch (error) {
       console.error("Erro no login com Google", error);
     }
@@ -73,18 +67,6 @@ const Login = () => {
 
   const handleGoogleFailure = () => {
     console.error("Falha no login com Google");
-  };
-
-  const handleSendVerificationCode = async () => {
-    try {
-      await api.post("/auth/send-code", { email });
-      alert("Código de verificação enviado para o seu e-mail.");
-      setTimeout(() => {
-        navigate("/verify-code", { state: { email } });
-      }, 500);
-    } catch (error) {
-      console.error("Erro ao enviar código de verificação", error);
-    }
   };
 
   return (
@@ -106,9 +88,9 @@ const Login = () => {
         <button type="submit">Entrar</button>
       </form>
 
-      <button onClick={handleSendVerificationCode}>
-        Enviar código de verificação
-      </button>
+      <p>
+        <a href="/request-code">Verificar login com código</a>
+      </p>
 
       <GoogleLogin
         onSuccess={handleGoogleSuccess}

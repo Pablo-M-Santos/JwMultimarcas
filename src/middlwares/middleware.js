@@ -21,18 +21,15 @@ export const authenticate = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    console.error("Erro na autenticação do token:", error);
     res.status(401).json({ error: "Token inválido." });
   }
 };
 
 export const isAdmin = (req, res, next) => {
   if (!req.user || req.user.role !== "admin") {
-    return res
-      .status(403)
-      .json({
-        error: "Acesso restrito. Permissões de administrador necessárias.",
-      });
+    return res.status(403).json({
+      error: "Acesso restrito. Permissões de administrador necessárias.",
+    });
   }
   next();
 };
