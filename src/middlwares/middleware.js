@@ -17,7 +17,6 @@ export const authenticate = (req, res, next) => {
     // Verifica e decodifica o token
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    console.log("Usuário autenticado:", decoded);
     req.user = decoded;
     next();
   } catch (error) {

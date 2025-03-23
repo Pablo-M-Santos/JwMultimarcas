@@ -9,6 +9,7 @@ import VerifyCode from "./pages/VerifyCode";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import RequestCode from "./pages/RequestCode";
+import Cadastro from "./pages/Cadastro";
 
 const GOOGLE_CLIENT_ID =
   "355361599465-3hus4sf98tom9dds64q15rupsio2pi60.apps.googleusercontent.com";
@@ -21,6 +22,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/verify-code" element={<VerifyCode />} />
           <Route path="/request-code" element={<RequestCode />} />
