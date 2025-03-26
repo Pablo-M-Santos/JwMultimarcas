@@ -1,0 +1,17 @@
+.carousel-indicators [data-bs-target] {
+    width: 10px !important;
+    /* Define o tamanho do ponto */
+    height: 10px !important;
+    /* Define o tamanho do ponto */
+    border-radius: 50% !important;
+    /* Torna os indicadores circulares */
+    background-color: #fff !important;
+    /* Cor dos pontos */
+    opacity: 1 !important;
+    /* Garante visibilidade */
+}
+
+.carousel-indicators .active {
+    background-color: #007bff !important;
+    /* Cor do ponto ativo */
+}

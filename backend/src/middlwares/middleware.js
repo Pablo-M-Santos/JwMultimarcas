@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || "12345678";
 
+// Autenticação
 export const authenticate = (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
@@ -14,7 +15,6 @@ export const authenticate = (req, res, next) => {
   }
 
   try {
-    // Verifica e decodifica o token
     const decoded = jwt.verify(token, JWT_SECRET);
 
     req.user = decoded;
@@ -24,6 +24,7 @@ export const authenticate = (req, res, next) => {
   }
 };
 
+// Verifica se o usuário é um administrador
 export const isAdmin = (req, res, next) => {
   if (!req.user || req.user.role !== "admin") {
     return res.status(403).json({

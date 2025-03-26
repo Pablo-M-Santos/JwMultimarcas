@@ -1,0 +1,38 @@
+Usuário:
+    - Login de usuário
+    http://localhost:5000/auth/login
+    {
+    "email": "admin@gmail.com",
+    "password": "12345678"
+    }
+
+
+    - Cadastrar Usuário:
+    http://localhost:5000/auth/register
+    {
+    "name": "Teste de Login",
+    "email": "testdeLogin@email.com",
+    "password": "12345678",
+    "role": "client"
+    }
+
+    - Todos os Usuário:
+    http://localhost:5000/users
+
+Produtos:
+    - Criar produto
+    http://localhost:5000/api/products
+    {
+    "name": "Notebook Dell",
+    "price": 4500
+    }
+
+    - Todos os produtos:
+    http://localhost:5000/api/products
+
+
+
+
+prisma:
+    - http://localhost:5555
+    npx prisma studio

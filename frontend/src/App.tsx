@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import Home from "./pages/Home";
+
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import AdminPage from "./pages/AdminPage";
@@ -10,6 +11,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import RequestCode from "./pages/RequestCode";
 import Cadastro from "./pages/Cadastro";
+import HomePage from "./pages/HomePage";
+
 
 const GOOGLE_CLIENT_ID =
   "355361599465-3hus4sf98tom9dds64q15rupsio2pi60.apps.googleusercontent.com";
@@ -21,6 +24,7 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
           <Route path="/checkout" element={<Checkout />} />

@@ -9,7 +9,11 @@
 
 <div> -->
 
+> [!NOTE]
+> é verdade
 
+> [!WARNING]
+> é verdade
 <div align="center">
   <h1><b>JW Multimarcas</b></h1>
 </div>

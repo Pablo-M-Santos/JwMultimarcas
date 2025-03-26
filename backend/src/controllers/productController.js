@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+
+// Criar Produto (Apenas Admin)
 export const createProduct = async (req, res) => {
   try {
     const { name, price } = req.body;
@@ -23,6 +25,8 @@ export const createProduct = async (req, res) => {
   }
 };
 
+
+// Buscar Produto por ID
 export const getAllProducts = async (req, res) => {
   try {
     const products = await prisma.product.findMany();
@@ -32,6 +36,8 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
+
+// Atualizar Produto (Apenas Admin)
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;

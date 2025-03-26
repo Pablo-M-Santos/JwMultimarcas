@@ -16,7 +16,7 @@ const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "pablomoreirasantos.hp@gmail.com", // Configure isso no .env
+    user: "pablomoreirasantos.hp@gmail.com",
     pass: "owee ehga aigb uzip",
   },
 });
@@ -24,6 +24,7 @@ const transporter = nodemailer.createTransport({
 const verificationCodes = new Map();
 const verificationCodeExpiration = 5 * 60 * 1000;
 
+// Envio de código de verificação por e-mail
 export const sendVerificationCode = async (req, res) => {
   try {
     const { email } = req.body;
@@ -33,12 +34,10 @@ export const sendVerificationCode = async (req, res) => {
       return res.status(400).json({ error: "E-mail não encontrado" });
     }
 
-    // Gerando código de verificação
     const code = crypto.randomInt(100000, 999999).toString();
-    const expirationTime = Date.now() + verificationCodeExpiration; // Adiciona a expiração do código
+    const expirationTime = Date.now() + verificationCodeExpiration;
     verificationCodes.set(email, { code, expirationTime });
 
-    // Configuração de envio de e-mail
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
@@ -46,7 +45,6 @@ export const sendVerificationCode = async (req, res) => {
       text: `Seu código de verificação é: ${code}`,
     };
 
-    // Tentativa de envio do e-mail
     try {
       await transporter.sendMail(mailOptions);
       return res.json({ message: "Código enviado para o e-mail" });
@@ -62,6 +60,7 @@ export const sendVerificationCode = async (req, res) => {
   }
 };
 
+// Verificação do código recebido pelo usuário
 export const verifyCode = async (req, res) => {
   try {
     const { email, code } = req.body;
@@ -73,7 +72,7 @@ export const verifyCode = async (req, res) => {
     }
 
     if (codeData.expirationTime < Date.now()) {
-      verificationCodes.delete(email); // Remove o código após a expiração
+      verificationCodes.delete(email);
       return res.status(400).json({ error: "Código expirado" });
     }
 
@@ -81,7 +80,7 @@ export const verifyCode = async (req, res) => {
       return res.status(400).json({ error: "Código inválido" });
     }
 
-    verificationCodes.delete(email); // Remove o código após o uso
+    verificationCodes.delete(email);
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
@@ -103,6 +102,8 @@ export const verifyCode = async (req, res) => {
   }
 };
 
+
+// Login com e-mail e senha
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -129,6 +130,8 @@ export const login = async (req, res) => {
   }
 };
 
+
+// Registro de novo usuário
 export const register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -161,6 +164,8 @@ export const register = async (req, res) => {
   }
 };
 
+
+// Login com Google
 export const googleLogin = async (req, res) => {
   try {
     const { tokenId } = req.body;
@@ -189,19 +194,21 @@ export const googleLogin = async (req, res) => {
   }
 };
 
+
+// Obtém o perfil do usuário autenticado
 export const getUserProfile = async (req, res) => {
   try {
-    console.log("ID do usuário extraído do token:", req.user.id); // Log do user ID para garantir que foi extraído corretamente
+    console.log("ID do usuário extraído do token:", req.user.id); 
 
-    const userId = req.user.id; // O ID do usuário vem do token
+    const userId = req.user.id; 
 
-    // Tentando encontrar o usuário no banco de dados
+    
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { name: true, email: true, role: true, picture: true }, // Selecione os dados que deseja retornar
+      select: { name: true, email: true, role: true, picture: true }, 
     });
 
-    console.log("Usuário encontrado:", user); // Log se o usuário foi encontrado ou não
+    console.log("Usuário encontrado:", user); 
 
     if (!user) {
       return res.status(404).json({ error: "Usuário não encontrado" });
@@ -209,7 +216,7 @@ export const getUserProfile = async (req, res) => {
 
     res.json(user);
   } catch (error) {
-    console.error("Erro ao obter perfil do usuário:", error); // Log detalhado do erro
+    console.error("Erro ao obter perfil do usuário:", error); 
     res.status(500).json({ error: "Erro no servidor" });
   }
 };
