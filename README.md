@@ -9,11 +9,11 @@
 
 <div> -->
 
-> [!NOTE]
+<!-- > [!NOTE]
 > é verdade
 
 > [!WARNING]
-> é verdade
+> é verdade -->
 <div align="center">
   <h1><b>JW Multimarcas</b></h1>
 </div>
@@ -39,7 +39,7 @@ Este projeto apresenta o desenvolvimento de uma aplicação de e-commerce multip
 
 ### **Frontend:**  
 
-- **React.js**
+- **Vue.js**
 - **TypeScript** 
 - **Vite**
 
@@ -74,7 +74,7 @@ Certifique-se de ter o Node.js instalado em sua máquina.
 ```bash
   npm run dev
 ```
- > O frontend estará disponível em http://localhost:5173
+ > O frontend estará disponível em http://localhost:3000
 
 3. saia da pasta frontend
 ```bash
