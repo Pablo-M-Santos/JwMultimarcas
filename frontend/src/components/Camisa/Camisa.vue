@@ -19,6 +19,7 @@
           md="6"
           class="produto-imagem pr-7"
         >
+          <!-- Carrossel de imagens do produto -->
           <v-carousel
             v-model="indexImagemSelecionada"
             height="400"
@@ -35,7 +36,8 @@
               />
             </v-carousel-item>
           </v-carousel>
-          <!-- Miniaturas roláveis -->
+
+          <!-- Miniaturas -->
           <div
             ref="miniaturasContainer"
             class="miniaturas-container"
@@ -57,6 +59,7 @@
             </div>
           </div>
         </v-col>
+        <!-- Coluna com informações do produto -->
         <v-col
           cols="12"
           md="6"
@@ -71,6 +74,29 @@
           <p class="descricao">
             {{ camisa.descricao }}
           </p>
+          <div class="cor-selecionada">
+            <p>COR: {{ corSelecionada }}</p>
+            <v-btn
+              v-for="(cor, index) in camisa?.cor || []"
+              :key="index"
+              :color="cor"
+              :class="{ 'btn-ativo': corSelecionada === cor }"
+              @click="selecionarCor(cor, index)"
+            >
+              {{ cor }}
+            </v-btn>
+          </div>
+          <div class="tamanho-selecionado">
+            <p>TAMANHO: {{ tamanhoSelecionado }}</p>
+            <v-btn
+              v-for="(tamanho, index) in camisa?.tamanhos || []"
+              :key="index"
+              :class="{ 'btn-ativo': tamanhoSelecionado === tamanho }"
+              @click="selecionarTamanho(tamanho)"
+            >
+              {{ tamanho }}
+            </v-btn>
+          </div>
         </v-col>
       </v-row>
     </v-container>
@@ -78,9 +104,11 @@
 </template>
 <script setup>
 import { computed, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { watch, nextTick } from "vue";
 
 const route = useRoute();
+const router = useRouter();
 
 const camisas = [
   {
@@ -90,6 +118,7 @@ const camisas = [
       new URL("../../assets/camisas/camisa2.png", import.meta.url).href,
       new URL("../../assets/camisas/camisa3.png", import.meta.url).href,
     ],
+    cor: ["cinza", "verde", "vermleho", "azul"],
     nome: "Camisa Estilosa",
     preco: "R$ 79,90",
   },
@@ -119,14 +148,11 @@ const camisas = [
       new URL("../../assets/camisas/camisa1.png", import.meta.url).href,
       new URL("../../assets/camisas/camisa2.png", import.meta.url).href,
       new URL("../../assets/camisas/camisa3.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa3.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa3.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa3.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa3.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa3.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa3.png", import.meta.url).href,
+      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
     ],
+    cor: ["cinza", "verde", "vermleho", "azul"],
     nome: "Camisa Esportiva",
+     tamanhos: ["P", "M", "G", "GG"],
     preco: "R$ 79,90",
   },
 ];
@@ -135,7 +161,46 @@ const camisa = computed(() =>
   camisas.find((c) => c.slug === route.params.slug)
 );
 
+// Move as miniaturas enquanto arrasta
+const scrollToMiniatura = () => {
+  if (!miniaturasContainer.value) return;
+  const miniaturas = miniaturasContainer.value.querySelectorAll(".miniatura");
+  if (miniaturas[indexImagemSelecionada.value]) {
+    miniaturasContainer.value.scrollLeft =
+      miniaturas[indexImagemSelecionada.value].offsetLeft -
+      miniaturasContainer.value.offsetWidth / 1 +
+      miniaturas[indexImagemSelecionada.value].offsetWidth / 5;
+  }
+};
 const indexImagemSelecionada = ref(0);
+const corSelecionada = ref(route.query.cor || "");
+const tamanhoSelecionado = ref(route.query.tamanho || "");
+
+const selecionarCor = (cor, index) => {
+  corSelecionada.value = cor;
+  indexImagemSelecionada.value = index;
+  atualizarURL();
+};
+
+const selecionarTamanho = (tamanho) => {
+  tamanhoSelecionado.value = tamanho;
+  atualizarURL();
+};
+
+const atualizarURL = () => {
+  router.replace({
+    path: route.path,
+    query: {
+      cor: corSelecionada.value,
+      tamanho: tamanhoSelecionado.value,
+    },
+  });
+};
+
+watch(indexImagemSelecionada, async () => {
+  await nextTick();
+  scrollToMiniatura();
+});
 
 const selecionarImagem = (index) => {
   indexImagemSelecionada.value = index;
@@ -156,7 +221,7 @@ const arrastar = (event) => {
   if (!isDragging.value) return;
   event.preventDefault();
   const x = event.pageX - miniaturasContainer.value.offsetLeft;
-  const walk = (x - startX.value) * 2; // Multiplica para aumentar a sensibilidade do arraste
+  const walk = (x - startX.value) * 1.5;
   miniaturasContainer.value.scrollLeft = scrollLeft.value - walk;
 };
 
@@ -251,4 +316,32 @@ const pararArraste = () => {
 .miniaturas-container:active {
   cursor: grabbing;
 }
+
+/* Estilo dos botões de cor */
+.cor-selecionada {
+  margin-top: 20px;
+}
+
+.v-btn {
+  margin: 5px;
+}
+
+.btn-ativo {
+  font-weight: bold;
+  background-color: #f7d62f;
+}
+
+.tamanho-selecionado {
+  margin-top: 20px;
+}
+
+.v-btn {
+  margin: 5px;
+}
+
+.btn-ativo {
+  font-weight: bold;
+  background-color: #f7d62f;
+}
+
 </style>
