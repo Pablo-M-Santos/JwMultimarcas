@@ -68,9 +68,9 @@ const camisas = [
     preco: "R$ 79,90",
   },
   {
-    slug: "camisa-esportiva",
-    img: new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
-    nome: "Camisa Esportiva",
+    slug: "camisa-classica-vasco",
+    img: new URL("../../assets/camisas/Vasco/vasco1.png", import.meta.url).href,
+    nome: "Camisa Classica do Vasco",
     preco: "R$ 79,90",
   },
 ];

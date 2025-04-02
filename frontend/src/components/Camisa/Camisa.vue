@@ -1,3 +1,4 @@
+Como faço para o btn ocupar 100% do width sem sair da quantidade-container
 <template>
   <div
     class="container d-flex justify-center align-center"
@@ -22,7 +23,6 @@
           <!-- Carrossel de imagens do produto -->
           <v-carousel
             v-model="indexImagemSelecionada"
-            height="400"
             show-arrows="hover"
             hide-delimiters
           >
@@ -74,7 +74,10 @@
           <p class="descricao">
             {{ camisa.descricao }}
           </p>
-          <div class="cor-selecionada">
+          <div
+            v-if="camisa?.exibirCor"
+            class="cor-selecionada"
+          >
             <p>COR: {{ corSelecionada }}</p>
             <v-btn
               v-for="(cor, index) in camisa?.cor || []"
@@ -87,7 +90,9 @@
             </v-btn>
           </div>
           <div>
-            <p>TAMANHO: {{ tamanhoSelecionado }}</p>
+            <p class="titulo-infor">
+              TAMANHO: {{ tamanhoSelecionado }}
+            </p>
             <v-btn
               v-for="(tamanho, index) in camisa?.tamanhos || []"
               :key="index"
@@ -99,33 +104,34 @@
             </v-btn>
           </div>
 
-          <div class="d-flex align-center">
-            <p class="mr-2">
-              QUANTIDADE:
-            </p>
+          <p class="mt-5 titulo-infor">
+            QUANTIDADE
+          </p>
+          <div
+            class="d-flex align-center quantidade-container"
+          >
+            <div class="container-quantidade-carrinho">
+              <v-btn
+                :disabled="quantidade <= 1"
+                @click="alterarQuantidade(-1)"
+              >
+                -
+              </v-btn>
+              <span class="quantidade">{{ quantidade }}</span>
+              <v-btn
+                @click="alterarQuantidade(1)"
+              >
+                +
+              </v-btn>
+            </div>
+
             <v-btn
-              :disabled="quantidade <= 1"
-              class="mx-2"
-              @click="alterarQuantidade(-1)"
+              class="adicionar-carrinho"
+              @click="adicionarAoCarrinho"
             >
-              -
-            </v-btn>
-            <span class="quantidade">{{ quantidade }}</span>
-            <v-btn
-              class="mx-2"
-              @click="alterarQuantidade(1)"
-            >
-              +
+              Adicionar ao Carrinho
             </v-btn>
           </div>
-
-          <v-btn
-            color="primary"
-            class="mt-2"
-            @click="adicionarAoCarrinho"
-          >
-            Adicionar ao Carrinho
-          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -149,7 +155,9 @@ const camisas = [
     ],
     cor: ["cinza", "verde", "vermleho", "azul"],
     nome: "Camisa Estilosa",
+    tamanhos: ["P", "M", "G", "GG"],
     preco: "R$ 79,90",
+    exibirCor: true,
   },
   {
     slug: "camisa-casual",
@@ -159,7 +167,9 @@ const camisas = [
       new URL("../../assets/camisas/camisa3.png", import.meta.url).href,
     ],
     nome: "Camisa Casual",
+    tamanhos: ["P", "M", "G", "GG"],
     preco: "R$ 79,90",
+    exibirCor: true,
   },
   {
     slug: "camisa-social",
@@ -169,25 +179,25 @@ const camisas = [
       new URL("../../assets/camisas/camisa3.png", import.meta.url).href,
     ],
     nome: "Camisa Social",
+    tamanhos: ["P", "M", "G", "GG"],
     preco: "R$ 79,90",
+    exibirCor: true,
   },
   {
-    slug: "camisa-esportiva",
+    slug: "camisa-classica-vasco",
     img: [
-      new URL("../../assets/camisas/camisa1.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa2.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa3.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
-      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
+      new URL("../../assets/camisas/Vasco/vasco1.png", import.meta.url).href,
+      new URL("../../assets/camisas/Vasco/vasco2.png", import.meta.url).href,
+      new URL("../../assets/camisas/Vasco/vasco3.png", import.meta.url).href,
+      new URL("../../assets/camisas/Vasco/vasco4.png", import.meta.url).href,
+      new URL("../../assets/camisas/Vasco/vasco5.png", import.meta.url).href,
+      new URL("../../assets/camisas/Vasco/vasco6.png", import.meta.url).href,
+      new URL("../../assets/camisas/Vasco/vasco7.png", import.meta.url).href,
+      new URL("../../assets/camisas/Vasco/vasco8.png", import.meta.url).href,
+
     ],
-    cor: ["cinza", "verde", "vermleho", "azul"],
-    nome: "Camisa Esportiva",
+    exibirCor: false,
+    nome: "Camisa Vasco I 24/25 Jogador Kappa Masculina - Preto+Branco",
     tamanhos: ["P", "M", "G", "GG"],
     preco: "R$ 79,90",
   },
@@ -212,7 +222,7 @@ const scrollToMiniatura = () => {
         (miniaturaRect.left - containerRect.left) -
         miniaturasContainer.value.offsetWidth / 2 +
         miniaturaSelecionada.offsetWidth / 2,
-      behavior: "smooth", // Rolagem suave
+      behavior: "smooth",
     });
   }
 };
@@ -295,31 +305,37 @@ const pararArraste = () => {
   margin-top: 210px;
 }
 .img-detalhe {
-  max-width: 500px;
-  max-height: 500px;
-  background-color: gray;
+  max-width: 550px;
+  max-height: 550px;
 }
 
 .produto-imagem {
   display: flex;
   justify-content: center;
   flex-direction: column;
-  max-width: 500px;
+  max-width: 550px;
 }
 
 .produto-infor {
-  background-color: rgb(90, 90, 90);
+  max-width: 550px;
 }
 .titulo {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: bold;
+  line-height: 1.4;
+  max-width: 450px;
 }
 .preco {
-  font-size: 20px;
-  color: green;
+  margin-top: 20px;
+  font-size: 28px;
   font-weight: bold;
 }
+
+.titulo-infor {
+  font-size: 17px;
+}
 .descricao {
+  margin-top: 20px;
   font-size: 16px;
   color: gray;
 }
@@ -376,15 +392,17 @@ const pararArraste = () => {
   cursor: grabbing;
 }
 
-/* Estilo dos botões de cor */
+
 .cor-selecionada {
   margin-top: 20px;
 }
 
-.v-btn {
+
+.button-info {
+  font-size: 17px;
+  padding: 10px;
   margin: 5px;
 }
-
 .btn-ativo {
   font-weight: bold;
   background-color: #f7d62f;
@@ -398,10 +416,6 @@ const pararArraste = () => {
   margin: 5px;
 }
 
-.btn-ativo {
-  font-weight: bold;
-  background-color: #f7d62f;
-}
 .tamanho-selecionado,
 .quantidade-selecionada {
   display: flex;
@@ -414,14 +428,19 @@ const pararArraste = () => {
   font-weight: bold;
 }
 
+
+.quantidade-container {
+  gap: 30px;
+  max-width: 550px;
+}
+
+.adicionar-carrinho {
+  background-color: #f7d62f;
+}
+
 p ,v-btn{
   display: flex;
   flex-direction: column;
   align-items: start;
-}
-
-.fundo-cinza {
-  background-color: gray;
-
 }
 </style>
