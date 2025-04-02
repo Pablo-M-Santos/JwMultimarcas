@@ -86,17 +86,46 @@
               {{ cor }}
             </v-btn>
           </div>
-          <div class="tamanho-selecionado">
+          <div>
             <p>TAMANHO: {{ tamanhoSelecionado }}</p>
             <v-btn
               v-for="(tamanho, index) in camisa?.tamanhos || []"
               :key="index"
+              class="button-info"
               :class="{ 'btn-ativo': tamanhoSelecionado === tamanho }"
               @click="selecionarTamanho(tamanho)"
             >
               {{ tamanho }}
             </v-btn>
           </div>
+
+          <div class="d-flex align-center">
+            <p class="mr-2">
+              QUANTIDADE:
+            </p>
+            <v-btn
+              :disabled="quantidade <= 1"
+              class="mx-2"
+              @click="alterarQuantidade(-1)"
+            >
+              -
+            </v-btn>
+            <span class="quantidade">{{ quantidade }}</span>
+            <v-btn
+              class="mx-2"
+              @click="alterarQuantidade(1)"
+            >
+              +
+            </v-btn>
+          </div>
+
+          <v-btn
+            color="primary"
+            class="mt-2"
+            @click="adicionarAoCarrinho"
+          >
+            Adicionar ao Carrinho
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -149,10 +178,17 @@ const camisas = [
       new URL("../../assets/camisas/camisa2.png", import.meta.url).href,
       new URL("../../assets/camisas/camisa3.png", import.meta.url).href,
       new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
+      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
+      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
+      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
+      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
+      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
+      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
+      new URL("../../assets/camisas/camisa4.png", import.meta.url).href,
     ],
     cor: ["cinza", "verde", "vermleho", "azul"],
     nome: "Camisa Esportiva",
-     tamanhos: ["P", "M", "G", "GG"],
+    tamanhos: ["P", "M", "G", "GG"],
     preco: "R$ 79,90",
   },
 ];
@@ -175,11 +211,25 @@ const scrollToMiniatura = () => {
 const indexImagemSelecionada = ref(0);
 const corSelecionada = ref(route.query.cor || "");
 const tamanhoSelecionado = ref(route.query.tamanho || "");
+const quantidade = ref(1);
 
 const selecionarCor = (cor, index) => {
   corSelecionada.value = cor;
   indexImagemSelecionada.value = index;
   atualizarURL();
+};
+
+const alterarQuantidade = (valor) => {
+  if (quantidade.value + valor >= 1) {
+    quantidade.value += valor;
+  }
+};
+const adicionarAoCarrinho = () => {
+  console.log("Produto adicionado ao carrinho:", {
+    cor: corSelecionada.value,
+    tamanho: tamanhoSelecionado.value,
+    quantidade: quantidade.value,
+  });
 };
 
 const selecionarTamanho = (tamanho) => {
@@ -244,7 +294,6 @@ const pararArraste = () => {
 .produto-imagem {
   display: flex;
   justify-content: center;
-  background-color: red;
   flex-direction: column;
   max-width: 500px;
 }
@@ -292,16 +341,17 @@ const pararArraste = () => {
 /* Miniaturas */
 .miniaturas {
   display: flex;
-  gap: 10px;
+  gap: 15px;
 }
 
 .miniatura {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   object-fit: cover;
   cursor: pointer;
   border: 2px solid transparent;
   transition: border 0.3s ease-in-out;
+  padding: 5px;
 }
 
 .miniatura:hover {
@@ -309,7 +359,7 @@ const pararArraste = () => {
 }
 
 .miniatura-ativa {
-  border: 3px solid blue !important;
+  border: 3px solid rgb(0, 0, 0) !important;
   opacity: 0.8;
 }
 
@@ -343,5 +393,26 @@ const pararArraste = () => {
   font-weight: bold;
   background-color: #f7d62f;
 }
+.tamanho-selecionado,
+.quantidade-selecionada {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
+.quantidade {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+p ,v-btn{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.fundo-cinza {
+  background-color: gray;
+
+}
 </style>
