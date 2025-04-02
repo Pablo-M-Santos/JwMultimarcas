@@ -197,17 +197,26 @@ const camisa = computed(() =>
   camisas.find((c) => c.slug === route.params.slug)
 );
 
-// Move as miniaturas enquanto arrasta
 const scrollToMiniatura = () => {
   if (!miniaturasContainer.value) return;
   const miniaturas = miniaturasContainer.value.querySelectorAll(".miniatura");
+
   if (miniaturas[indexImagemSelecionada.value]) {
-    miniaturasContainer.value.scrollLeft =
-      miniaturas[indexImagemSelecionada.value].offsetLeft -
-      miniaturasContainer.value.offsetWidth / 1 +
-      miniaturas[indexImagemSelecionada.value].offsetWidth / 5;
+    const miniaturaSelecionada = miniaturas[indexImagemSelecionada.value];
+    const containerRect = miniaturasContainer.value.getBoundingClientRect();
+    const miniaturaRect = miniaturaSelecionada.getBoundingClientRect();
+
+    miniaturasContainer.value.scrollTo({
+      left:
+        miniaturasContainer.value.scrollLeft +
+        (miniaturaRect.left - containerRect.left) -
+        miniaturasContainer.value.offsetWidth / 2 +
+        miniaturaSelecionada.offsetWidth / 2,
+      behavior: "smooth", // Rolagem suave
+    });
   }
 };
+
 const indexImagemSelecionada = ref(0);
 const corSelecionada = ref(route.query.cor || "");
 const tamanhoSelecionado = ref(route.query.tamanho || "");
