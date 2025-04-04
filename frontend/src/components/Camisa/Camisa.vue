@@ -71,14 +71,11 @@ Como faço para o btn ocupar 100% do width sem sair da quantidade-container
           <p class="preco">
             {{ camisa.preco }}
           </p>
-          <p class="descricao">
-            {{ camisa.descricao }}
-          </p>
           <div
             v-if="camisa?.exibirCor"
-            class="cor-selecionada"
+            class="cor-selecionada font-weight-bold"
           >
-            <p>COR: {{ corSelecionada }}</p>
+            <p>Cor: {{ corSelecionada }}</p>
             <v-btn
               v-for="(cor, index) in camisa?.cor || []"
               :key="index"
@@ -90,47 +87,53 @@ Como faço para o btn ocupar 100% do width sem sair da quantidade-container
             </v-btn>
           </div>
           <div>
-            <p class="titulo-infor">
-              TAMANHO: {{ tamanhoSelecionado }}
+            <p class="titulo-infor mt-6">
+              Tamanho: {{ tamanhoSelecionado }}
             </p>
-            <v-btn
-              v-for="(tamanho, index) in camisa?.tamanhos || []"
-              :key="index"
-              class="button-info"
-              :class="{ 'btn-ativo': tamanhoSelecionado === tamanho }"
-              @click="selecionarTamanho(tamanho)"
-            >
-              {{ tamanho }}
-            </v-btn>
+            <div class="tamanho-button">
+              <v-btn
+                v-for="(tamanho, index) in camisa?.tamanhos || []"
+                :key="index"
+                class="button-info"
+                :class="{ 'btn-ativo': tamanhoSelecionado === tamanho }"
+                @click="selecionarTamanho(tamanho)"
+              >
+                {{ tamanho }}
+              </v-btn>
+            </div>
           </div>
 
-          <p class="mt-5 titulo-infor">
-            QUANTIDADE
+          <p class="titulo-infor mt-6 font-weight-bold">
+            Quantidade
           </p>
           <div
             class="d-flex align-center quantidade-container"
           >
             <div class="container-quantidade-carrinho">
-              <v-btn
+              <p
+                class="quantidade-botao esquerda"
                 :disabled="quantidade <= 1"
                 @click="alterarQuantidade(-1)"
               >
-                -
-              </v-btn>
+                &minus;
+              </p>
               <span class="quantidade">{{ quantidade }}</span>
-              <v-btn
+              <p
+                class="quantidade-botao direita"
                 @click="alterarQuantidade(1)"
               >
                 +
-              </v-btn>
+              </p>
             </div>
 
-            <v-btn
-              class="adicionar-carrinho"
-              @click="adicionarAoCarrinho"
-            >
-              Adicionar ao Carrinho
-            </v-btn>
+            <div class="finalizar-compra">
+              <v-btn
+                class="adicionar-carrinho"
+                @click="adicionarAoCarrinho"
+              >
+                Adicionar ao Carrinho
+              </v-btn>
+            </div>
           </div>
         </v-col>
       </v-row>
@@ -320,19 +323,23 @@ const pararArraste = () => {
   max-width: 550px;
 }
 .titulo {
-  font-size: 30px;
-  font-weight: bold;
+  font-size: 34px;
+  font-weight: 400;
   line-height: 1.4;
   max-width: 450px;
+}
+
+.tamanho-button {
+  margin-top: 20px;
 }
 .preco {
   margin-top: 20px;
   font-size: 28px;
-  font-weight: bold;
+  font-weight: 400;
 }
 
 .titulo-infor {
-  font-size: 17px;
+  font-size: 18px;
 }
 .descricao {
   margin-top: 20px;
@@ -370,8 +377,8 @@ const pararArraste = () => {
 }
 
 .miniatura {
-  width: 100px;
-  height: 100px;
+  width: 85px;
+  height: 85px;
   object-fit: cover;
   cursor: pointer;
   border: 2px solid transparent;
@@ -379,12 +386,8 @@ const pararArraste = () => {
   padding: 5px;
 }
 
-.miniatura:hover {
-  border: 2px solid #000;
-}
-
 .miniatura-ativa {
-  border: 3px solid rgb(0, 0, 0) !important;
+  border: 1px solid rgb(0, 0, 0) !important;
   opacity: 0.8;
 }
 
@@ -402,6 +405,7 @@ const pararArraste = () => {
   font-size: 17px;
   padding: 10px;
   margin: 5px;
+  margin-top: 20px;
 }
 .btn-ativo {
   font-weight: bold;
@@ -429,14 +433,51 @@ const pararArraste = () => {
 }
 
 
+
 .quantidade-container {
-  gap: 30px;
-  max-width: 550px;
+  display: flex;
+  margin-top: 20px;
+  gap: 20px;
+}
+
+.finalizar-compra {
+  flex: 1;
 }
 
 .adicionar-carrinho {
   background-color: #f7d62f;
+  width: 100%;
+
 }
+
+.container-quantidade-carrinho {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  width: fit-content;
+  background-color: white;
+}
+
+.quantidade-botao {
+  font-size: 30px;
+  padding: 5px 20px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.quantidade {
+  padding: 8px 16px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 
 p ,v-btn{
   display: flex;
